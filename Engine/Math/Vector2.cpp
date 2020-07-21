@@ -8,7 +8,7 @@ namespace nc
 	const Vector2 Vector2::right{ 1, 0 };
 	const Vector2 Vector2::up{ 0,-1 };
 	const Vector2 Vector2::down{ 0,1 };
-	const Vector2 Vector2::forward{ 1,0 };
+	const Vector2 Vector2::forward{ 0, -1 };
 
 	std::istream& operator>>(std::istream& stream, Vector2& v)
 	{

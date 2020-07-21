@@ -47,7 +47,7 @@ namespace nc
 		static float Distance(const Vector2& v1, const Vector2& v2);
 
 		Vector2 Normalized() const;
-		void Normalized();
+		void Normalize();
 
 		static Vector2 Rotate(const Vector2& v, float radians);
 
@@ -81,13 +81,12 @@ namespace nc
 
 		return n;
 	}
-	
-	inline void Vector2::Normalized()
+
+	inline void Vector2::Normalize()
 	{
 		float length = Length();
 		if (length == 0.0f)
 		{
-
 			*this = Vector2{ 0.0f, 0.0f };
 		}
 		else

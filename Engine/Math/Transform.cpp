@@ -6,16 +6,28 @@ namespace nc
 	std::istream& operator>>(std::istream& stream, Transform& transform)
 	{
 		stream >> transform.position;
-		stream >> transform.scale;
-		stream >> transform.angle;
+
+		std::string line;
+		std::getline(stream, line);
+		transform.scale = stof(line);
+		std::getline(stream, line);
+		transform.angle = stof(line);
+
+
 
 		return stream;
+	}
 
-		//player class
-		//positon
-		//angle
-		//rotation
-		//text file with it aka ship
+	void Transform::Update()
+	{
+		nc::Matrix33 mxs;
+		mxs.Scale(scale);
+		nc::Matrix33 mxr;
+		mxr.Rotate(angle);
+		nc::Matrix33 mxt;
+		mxt.Translate(position);
+
+		matrix = mxs * mxr * mxt;
 	}
 
 }
