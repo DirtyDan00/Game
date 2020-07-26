@@ -4,6 +4,7 @@
 #include "Object/Scene.h"
 namespace nc
 {
+	class Scene;
 	class Actor
 	{
 	public:
@@ -39,7 +40,7 @@ namespace nc
 		virtual void Load(std::istream& stream);
 		void SetScene(Scene* scene) { m_scene = scene; }
 		Transform& GetTransform() { return m_transform; }
-
+		float GetRadius();
 		Shape& GetShape() { return m_shape; }
 
 		void SetDestroy(bool destroy = true) { m_destroy = destroy; }

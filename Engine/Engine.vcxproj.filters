@@ -75,6 +75,12 @@
     <ClInclude Include="Actor\Projectile.h">
       <Filter>Actors</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Particle.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ParticleSystem.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -109,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="Actor\Projectile.cpp">
       <Filter>Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ParticleSystem.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

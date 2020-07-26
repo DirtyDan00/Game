@@ -39,18 +39,24 @@ namespace nc
 		friend std::istream& operator >> (std::istream& stream, Color& c);
 
 		COLORREF Pack888() const;
-		operator COLORREF() const { return Pack888(); }
+
+		operator COLORREF() const
+		{
+			BYTE _r = static_cast<BYTE>(r * 255.0f);
+			BYTE _g = static_cast<BYTE>(g * 255.0f);
+			BYTE _b = static_cast<BYTE>(b * 255.0f);
+
+			return (_r) | (_g << 8) | (_b << 16);
+
+		}
+
+		static const Color white;
+		static const Color red;
+		static const Color blue;
+		static const Color green;
 
 
 	};
 
-	inline COLORREF Color::Pack888() const
-	{
-		BYTE _r = static_cast<BYTE>(r * 255.0f);
-		BYTE _g = static_cast<BYTE>(g * 255.0f);
-		BYTE _b = static_cast<BYTE>(b * 255.0f);
-
-		return (_r) | (_g << 8) | (_b << 16);
-		
-	}
+	
 }

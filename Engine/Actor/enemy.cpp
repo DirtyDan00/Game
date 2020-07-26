@@ -3,6 +3,8 @@
 #include "player.h"
 #include "Math/Math.h"
 #include "Object/Scene.h"
+#include "Graphics/ParticleSystem.h"
+#include "../Game.h"
 #include <fstream>
 
 namespace nc 
@@ -41,6 +43,12 @@ namespace nc
 		if (actor->GetType() == eType::PROJECTILE)
 		{
 			m_destroy = true;
+			m_scene->GetGame()->AddPoints(100);
+
+			nc::Color colors[] = { nc::Color::white,nc::Color::blue,nc::Color::green };
+			nc::Color color = colors[rand() % 3];
+
+			g_particleSystem.Create(m_transform.position, 0, 180, 30, color, 1, 100, 200);
 		}
 	}
 }
