@@ -1,0 +1,4 @@
+{ 200, 100 }
+4
+0
+PowerShape3.txt

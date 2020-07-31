@@ -1,7 +1,9 @@
 // Game.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include "core.h"
+#include <time.h>
 #include "Game.h"
+#include "Audio/AudioSystem.h"
 
 Game game;
 
@@ -18,7 +20,8 @@ void Draw(Core::Graphics& graphics)
 }
 int main()
 {
-
+	
+	srand(static_cast<unsigned int>(time(NULL)));
 	game.Startup();
 
 

@@ -10,7 +10,7 @@ namespace nc
 		Vector2 velocity;
 		Color color;
 		float lifetime;
-		float damping{ 0.98 };
+		float damping{ 0.98f };
 		bool active{ false };
 	};
 }

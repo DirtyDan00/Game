@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "player.h"
 #include "Projectile.h"
+#include "enemy.h"
 #include "Object/Scene.h"
 #include "../Game.h"
+#include "Audio/AudioSystem.h"
+#include "Actor/PowerUp.h"
 #include <fstream>
+#include <string>
 #include "Math/Math.h"
 #include "Graphics/ParticleSystem.h"
 
@@ -18,8 +22,19 @@ namespace nc
 			success = true;
 			Actor::Load(stream);
 
-			stream >> m_rotationRate;
-			stream >> m_thrust;
+			//stream >> m_rotationRate;
+			std::string line;
+			std::getline(stream, line);
+			m_rotationRate = stof(line);
+			std::getline(stream, line);
+			m_thrust = stof(line);
+			std::getline(stream,line);
+			m_fireRate = stof(line);
+			//stream >> m_thrust;
+
+			//std::getline(stream,line);
+			//m_firerate = stof(line);
+			//read in the line for the options
 
 			stream.close();
 		}
@@ -30,9 +45,17 @@ namespace nc
 	{
 		nc::Vector2 force;
 		m_fireTimer += dt;
-		if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate)
+		m_rapidfire -= dt;
+		m_invnci -= dt;
+		m_doublepoint -= dt;
+		m_scene->GetGame()->SetPointMultiplier((m_doublepoint > 0) ? 2 : 1);
+
+		float fireRate = (m_rapidfire > 0) ? 0.2f : m_fireRate;
+		if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= fireRate)
 		{
 			m_fireTimer = 0;
+
+			g_audioSystem.PlayAudio("Laser");
 			Projectile* projectile = new Projectile;
 			projectile->Load("projectile.txt");
 			projectile->GetTransform().position = m_transform.position;
@@ -52,9 +75,16 @@ namespace nc
 		m_velocity = m_velocity + force * dt;
 		m_velocity = m_velocity * 0.98f;
 		m_transform.position = m_transform.position + m_velocity * dt;
+		//rotate
+		float torque = 0;
+		if (Core::Input::IsPressed('A')) { torque = -nc::DegreesToRadian(m_rotationRate); }
+		if (Core::Input::IsPressed('D')) { torque = nc::DegreesToRadian(m_rotationRate); }
 
-		if (Core::Input::IsPressed('A')) { m_transform.angle = m_transform.angle - (dt * nc::DegreesToRadian(360.0f)); }
-		if (Core::Input::IsPressed('D')) { m_transform.angle = m_transform.angle + (dt * nc::DegreesToRadian(360.0f)); }
+		m_angularVelocity = m_angularVelocity + torque * dt;
+		m_angularVelocity = m_angularVelocity * 0.95f;
+		m_transform.angle = m_transform.angle + m_angularVelocity * dt;
+
+		//m_transform.position = nc::Clamp(m_transform.position, { 0,0 }, { 400, 300 });
 
 		if (m_transform.position.x > 800) m_transform.position.x = 0;
 		if (m_transform.position.x < 0) m_transform.position.x = 800;
@@ -63,20 +93,61 @@ namespace nc
 
 		if (force.LengthSqr() > 0)
 		{
-			g_particleSystem.Create(GetTransform().position, GetTransform().angle + nc::PI, 20, 1, nc::Color::red, 1, 100, 200);
+			Actor* locator = m_children[0];
+			g_particleSystem.Create(locator->GetTransform().matrix.GetPosition(), locator->GetTransform().matrix.GetAngle() + nc::PI, 20, 1, nc::Color::red, 1, 100, 200);
+
+			locator = m_children[1];
+			g_particleSystem.Create(locator->GetTransform().matrix.GetPosition(), locator->GetTransform().matrix.GetAngle() + nc::PI, 20, 1, nc::Color::red, 1, 100, 200);
 		}
 
-		
-
-
 		m_transform.Update();
+
+		for(Actor* child : m_children)
+		{
+			child->Update(dt);
+		}
 	}
 
 	void player::OnCollision(Actor* actor)
 	{
-		if (actor->GetType() == eType::ENEMY)
+		if (actor->GetType() == eType::ENEMY && m_invnci < 0)
 		{
-			m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
+			m_scene->GetGame()->SetState(Game::eState::PLAYER_DEAD);
+			g_audioSystem.PlayAudio("Explosion");
+			m_destroy = true;
+			nc::Color colors[] = { nc::Color::white,nc::Color::blue,nc::Color::green };
+			nc::Color color = colors[rand() % 3];
+
+			g_particleSystem.Create(m_transform.position, 0, 180, 30, color, 1, 100, 200);
+
+
+			auto enemies = m_scene->GetActors<nc::enemy>();
+			for (auto enemy : enemies)
+			{
+				enemy->SetTarget(nullptr);
+			}
+		}
+		if (actor->GetType() == eType::POWERUP)
+		{
+			Powerup* powerup = static_cast<Powerup*>(actor);
+
+			Powerup::ePowerType currentPowerUp = powerup->GetPowerType();
+
+			switch (currentPowerUp)
+			{
+			case Powerup::ePowerType::RAPIDFIRE:
+				m_rapidfire = 15;
+				break;
+			case Powerup::ePowerType::DOUBLEPOINTS:
+				m_doublepoint = 20;
+				break;
+			case Powerup::ePowerType::INVCIBLITY:
+				m_invnci = 10;
+				break;
+			default:
+				break;
+			}
+
 		}
 	}
 

@@ -9,11 +9,7 @@ void nc::Scene::StartUp()
 
 void nc::Scene::Shutdown()
 {
-	for (auto actor : m_actors)
-	{
-		delete actor;
-	}
-	m_actors.clear();
+	RemoveAllActors();
 }
 
 void nc::Scene::Update(float dt)
@@ -36,6 +32,7 @@ void nc::Scene::Update(float dt)
 	{
 		if ((*iter)->IsDestroy())
 		{
+			(*iter)->Destroy();
 			delete* iter;
 			iter = m_actors.erase(iter);
 		}
@@ -75,4 +72,13 @@ void nc::Scene::RemoveActor(Actor* object)
 		m_actors.erase(iter);
 	}
 
+}
+
+void nc::Scene::RemoveAllActors()
+{
+	for (Actor* actor : m_actors)
+	{
+		delete actor;
+	}
+	m_actors.clear();
 }

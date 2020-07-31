@@ -20,9 +20,13 @@ namespace nc
 
 	protected:
 		float m_thrust{0.0f};
-		float m_rotationRate{360.0f};
-		float m_fireRate{ 0.5f };
+		float m_rotationRate{0.0f};
+		float m_fireRate{ 0.0f };
 		float m_fireTimer{ 0.0f };
+		float m_rapidfire{ 0.0f };
+		float m_invnci{ 0.0f };
+		float m_doublepoint{ 0.0f };
 		nc::Vector2 m_velocity;
+		float m_angularVelocity{ 0.0f };
 	};
 }

@@ -12,7 +12,9 @@ namespace nc
 		{
 			PLAYER,
 			ENEMY,
-			PROJECTILE
+			PROJECTILE,
+			LOCATOR,
+			POWERUP
 		};
 
 	public:
@@ -26,6 +28,8 @@ namespace nc
 		Actor(const Transform& transform, const Shape& shape) : m_transform{ transform }, m_shape{ shape }{};
 
 		virtual ~Actor() {}
+
+		virtual void Destroy();
 
 		virtual eType GetType() = 0;
 
@@ -46,12 +50,16 @@ namespace nc
 		void SetDestroy(bool destroy = true) { m_destroy = destroy; }
 		bool IsDestroy() { return m_destroy; }
 
+		void AddChild(Actor* child);
+		Actor* GetParent() { return m_parent; }
+
 	protected:
 		bool m_destroy{false};
 		Scene* m_scene{ nullptr };
 		Transform m_transform;
 		Shape m_shape;
 		
-
+		std::vector<Actor*> m_children; //vector good for going through big lists since theyre next to each other
+		Actor* m_parent{nullptr};
 	};
 }

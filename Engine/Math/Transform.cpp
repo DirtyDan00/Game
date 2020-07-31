@@ -30,4 +30,10 @@ namespace nc
 		matrix = mxs * mxr * mxt;
 	}
 
+	void Transform::Update(const Matrix33& mx)
+	{
+		Update();
+		matrix = matrix * mx;
+	}
+
 }

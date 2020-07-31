@@ -76,6 +76,7 @@ nc::Particle* nc::ParticleSystem::GetFreeParticle()
             freeParticle = p;
             break;
         }
+
     }
 
 

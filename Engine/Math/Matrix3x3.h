@@ -43,6 +43,20 @@ namespace nc
 			m[0][1] = 0; m[1][1] = 1; m[2][1] = 0;
 			m[0][2] = v.x; m[1][2] = v.y; m[2][2] = 1;
 		}
+		Vector2 GetPosition() const
+		{
+			return{ m[0][2], m[1][2] };
+		}
+		Vector2 GetScale() const
+		{
+			return{ m[0][0], m[1][1] };
+		}
+		float GetAngle() const
+		{
+			return std::atan2( m[1][0], m[0][0] );
+		}
+
+
 		void setIdentity()
 		{
 			m[0][0] = 1; m[1][0] = 0; m[2][0] = 0;
